@@ -1,0 +1,1047 @@
+ <!DOCTYPE html>
+  <html lang="fr">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>中文学习 - Apprendre le chinois (HSK 1)</title>
+      <style>
+          /* Reset et base */
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body {
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              line-height: 1.6;
+              color: #333;
+              background: #f8f9fa;
+              padding: 1rem;
+          }
+
+          /* Conteneur principal */
+          .container {
+              max-width: 500px;
+              margin: 0 auto;
+              background: white;
+              border-radius: 16px;
+              box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+              overflow: hidden;
+          }
+
+          /* Header */
+          .header {
+              background: linear-gradient(135deg, #ff6b6b, #ff5252);
+              color: white;
+              text-align: center;
+              padding: 2rem 1.5rem;
+          }
+          .header h1 {
+              font-size: 1.8rem;
+              margin-bottom: 0.5rem;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 0.5rem;
+          }
+          .header p {
+              opacity: 0.9;
+              font-size: 0.9rem;
+          }
+
+          /* Card principale */
+          .card {
+              text-align: center;
+              padding: 2.5rem 2rem;
+              border-bottom: 1px solid #eee;
+              position: relative;
+          }
+
+          /* Affichage des mots */
+          .french-word {
+              font-size: 2.2rem;
+              font-weight: 600;
+              color: #2c3e50;
+              margin-bottom: 1.5rem;
+              min-height: 50px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+          }
+
+          .chinese-word {
+              font-size: 3.8rem;
+              font-weight: 700;
+              color: #e74c3c;
+              margin-bottom: 0.5rem;
+              font-family: 'Noto Sans SC', 'Source Han Sans CN', sans-serif;
+              min-height: 80px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              opacity: 0;
+              transition: opacity 0.4s ease;
+          }
+          .chinese-word.visible { opacity: 1; }
+
+          .pinyin {
+              font-size: 1.4rem;
+              color: #7f8c8d;
+              font-style: italic;
+              margin-bottom: 1.5rem;
+              letter-spacing: 0.05em;
+              opacity: 0;
+              transition: opacity 0.4s ease;
+          }
+          .pinyin.visible { opacity: 1; }
+
+          /* Indication des tons (visuel utile pour l'apprentissage) */
+          .tones {
+              display: flex;
+              justify-content: center;
+              gap: 0.3rem;
+              margin-bottom: 1.5rem;
+              font-size: 1.3rem;
+          }
+          .tone-mark {
+              width: 1.2rem;
+              height: 1.2rem;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: 600;
+              color: white;
+          }
+          .tone-1 { background: #4cc9f0; } /* 1ère tone: haut et plat */
+          .tone-2 { background: #f72585; } /* 2ème tone: montante */
+          .tone-3 { background: #4cc9f0; } /* 3ème tone: basse puis montante */
+          .tone-4 { background: #f72585; } /* 4ème tone: descendante */
+          .tone-0 { background: #6c757d; } /* ton neutre */
+
+          /* Légende des tons */
+          .tones-legend {
+              font-size: 0.8rem;
+              color: #6c757d;
+              margin-top: 0.5rem;
+              display: flex;
+              gap: 0.5rem;
+              justify-content: center;
+              flex-wrap: wrap;
+          }
+          .tones-legend span {
+              display: flex;
+              align-items: center;
+              gap: 0.2rem;
+              font-size: 0.75rem;
+          }
+
+          /* Boutons de contrôle */
+          .controls {
+              display: flex;
+              gap: 0.75rem;
+              justify-content: center;
+              flex-wrap: wrap;
+              margin-top: 2rem;
+          }
+          .btn {
+              flex: 1 1 120px;
+              min-width: 80px;
+              padding: 0.75rem 1rem;
+              border: none;
+              border-radius: 12px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: all 0.2s ease;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 0.5rem;
+              font-size: 0.9rem;
+          }
+          .btn-primary {
+              background: linear-gradient(to right, #ff6b6b, #ff5252);
+              color: white;
+              box-shadow: 0 4px 12px rgba(255,107,107,0.3);
+          }
+          .btn-primary:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 6px 16px rgba(255,107,107,0.4);
+          }
+          .btn-secondary {
+              background: #6c757d;
+              color: white;
+          }
+          .btn-secondary:hover {
+              background: #5a6268;
+              transform: translateY(-2px);
+          }
+          .btn:active {
+              transform: translateY(0);
+          }
+
+          /* Indicateur de progrès */
+          .progress {
+              text-align: center;
+              margin: 2rem 0;
+              color: #6c757d;
+          }
+          .progress-bar {
+              height: 8px;
+              background: #e9ecef;
+              border-radius: 4px;
+              overflow: hidden;
+              margin: 0.5rem 0;
+          }
+          .progress-fill {
+              height: 100%;
+              background: linear-gradient(to right, #ff6b6b, #4cc9f0);
+              width: 0%;
+              transition: width 0.3s ease;
+          }
+
+          /* Statistiques */
+          .stats {
+              display: flex;
+              justify-content: space-around;
+              padding: 1.5rem;
+              background: #f8f9fa;
+              border-top: 1px solid #eee;
+              font-size: 0.9rem;
+          }
+          .stat {
+              text-align: center;
+          }
+          .stat-value {
+              font-size: 1.5rem;
+              font-weight: 600;
+              color: #2c3e50;
+              display: block;
+          }
+          .stat-label {
+              color: #6c757d;
+              font-size: 0.85rem;
+          }
+
+          /* Footer */
+          .footer {
+              text-align: center;
+              padding: 1.5rem;
+              color: #6c757d;
+              font-size: 0.85rem;
+              border-top: 1px solid #eee;
+          }
+
+          /* Responsive */
+          @media (max-width: 480px) {
+              .header h1 { font-size: 1.5rem; }
+              .card { padding: 2rem 1.5rem; }
+              .french-word { font-size: 1.8rem; }
+              .chinese-word { font-size: 3.2rem; }
+              .controls { flex-direction: column; }
+              .btn { width: 100%; margin-bottom: 0.5rem; }
+          }
+
+          /* Utilitaires */
+          .hidden { display: none; }
+          .visually-hidden {
+              position: absolute;
+              width: 1px;
+              height: 1px;
+              padding: 0;
+              margin: -1px;
+              overflow: hidden;
+              clip: rect(0, 0, 0, 0);
+              white-space: nowrap;
+              border: 0;
+          }
+      </style>
+  </head>
+  <body>
+      <div class="container">
+          <!-- Header -->
+          <header class="header">
+              <h1><i class="fa-solid fa-language"></i> 中文学习</h1>
+              <p>Application pour apprendre le chinois officiel HSK 1</p>
+          </header>
+
+          <!-- Main Card -->
+          <section class="card">
+              <div class="french-word" id="frenchWord">Bonjour</div>
+
+              <div class="chinese-word" id="chineseWord">你好</div>
+
+              <div class="pinyin" id="pinyin">nǐ hǎo</div>
+
+              <div class="tones" id="tones"></div>
+              <div class="tones-legend" id="tonesLegend"></div>
+
+              <div class="controls">
+                  <button id="showAnswer" class="btn btn-primary">
+                      <i class="fa-solid fa-eye"></i> Voir la réponse
+                  </button>
+                  <button id="nextWord" class="btn btn-secondary">
+                      <i class="fa-solid fa-forward"></i> Suivant
+                  </button>
+                  <button id="pronounce" class="btn btn-secondary">
+                      <i class="fa-solid fa-volume-up"></i> Écouter
+                  </button>
+              </div>
+
+              <div class="progress">
+                  <div id="counter">Mot 1/150</div>
+                  <div class="progress-bar">
+                      <div id="progressFill" class="progress-fill"></div>
+                  </div>
+              </div>
+
+              <div class="stats">
+                  <div class="stat">
+                      <div class="stat-value" id="correctCount">0</div>
+                      <div class="stat-label">Corrects</div>
+                  </div>
+                  <div class="stat">
+                      <div class="stat-value" id="wrongCount">0</div>
+                      <div class="stat-label">Erreurs</div>
+                  </div>
+                  <div class="stat">
+                      <div class="stat-value" id="streak">0</div>
+                      <div class="stat-label">Série</div>
+                  </div>
+              </div>
+          </section>
+
+          <!-- Footer -->
+          <footer class="footer">
+              <p>Données HSK 1 officielles • <a href="#" id="resetStats" style="color: #ff6b6b; text-decoration: none;">Réinitialiser les stats</a></p>
+          </footer>
+      </div>
+
+      <!-- Audio element (caché) -->
+      <audio id="pronunciationAudio" preload="auto"></audio>
+
+      <!-- Font Awesome (pour les icônes) -->
+      <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
+      <!-- Remplacez "yourkitid" par votre propre kit ID Font Awesome gratuit, ou supprimez cette ligne pour des icônes texte -->
+
+      <script>
+          // ======================
+          // DONNÉES DE VOCABULAIRE HSK 1 OFFICIELLES
+          // ======================
+          // Source: Liste officielle HSK Niveau 1 (150 mots)
+          // Format: { french: "...", chinese: "...", pinyin: "...", tones: [num, num] }
+          // Tons: 1=ˉ (haute plate), 2=ˊ (montante), 3=ˇ (basse puis montante), 4=ˋ (descendante), 0=˙ (neutre)
+          const vocabulary = [
+              { french: "Bonjour", chinese: "你好", pinyin: "nǐ hǎo", tones: [3, 3] },
+              { french: "Au revoir", chinese: "再见", pinyin: "zài jiàn", tones: [4, 4] },
+              { french: "Merci", chinese: "谢谢", pinyin: "xiè xiè", tones: [4, 4] },
+              { french: "S'il vous plaît", chinese: "请", pinyin: "qǐng", tones: [3] },
+              { french: "Oui", chinese: "是", pinyin: "shì", tones: [4] },
+              { french: "Non", chinese: "不是", pinyin: "bù shì", tones: [4, 4] },
+              { french: "Je", chinese: "我", pinyin: "wǒ", tones: [3] },
+              { french: "Tu", chinese: "你", pinyin: "nǐ", tones: [3] },
+              { french: "Il/Elle", chinese: "他/她", pinyin: "tā", tones: [1] },
+              { french: "Nous", chinese: "我们", pinyin: "wǒ men", tones: [3, 0] },
+              { french: "Eau", chinese: "水", pinyin: "shuǐ", tones: [3] },
+              { french: "Thé", chinese: "茶", pinyin: "chá", tones: [2] },
+              { french: "Riz", chinese: "米饭", pinyin: "mǐ fàn", tones: [3, 4] },
+              { french: "Pomme", chinese: "苹果", pinyin: "píng guǒ", tones: [2, 3] },
+              { french: "Voiture", chinese: "车", pinyin: "chē", tones: [1] },
+              { french: "Maison", chinese: "房子", pinyin: "fáng zi", tones: [2, 0] },
+              { french: "École", chinese: "学校", pinyin: "xué xiào", tones: [2, 4] },
+              { french: "Temps", chinese: "时间", pinyin: "shí jiān", tones: [2, 1] },
+              { french: "Ami", chinese: "朋友", pinyin: "péng yǒu", tones: [2, 3] },
+              { french: "Amour", chinese: "爱", pinyin: "ài", tones: [4] },
+              { french: "Manger", chinese: "吃饭", pinyin: "chī fàn", tones: [1, 4] },
+              { french: "Boire", chinese: "喝水", pinyin: "hē shuǐ", tones: [1, 3] },
+              { french: "Dormir", chinese: "睡觉", pinyin: "shuì jiào", tones: [4, 4] },
+              { french: "Travailler", chinese: "工作", pinyin: "gōng zuò", tones: [1, 4] },
+              { french: "Étudier", chinese: "学习", pinyin: "xué xí", tones: [2, 1] },
+              { french: "Acheter", chinese: "买", pinyin: "mǎi", tones: [3] },
+              { french: "Vendre", chinese: "卖", pinyin: "mài", tones: [4] },
+              { french: "Coûter", chinese: "多少钱", pinyin: "duō shǎo qián", tones: [2, 3, 1] },
+              { french: "Grand", chinese: "大", pinyin: "dà", tones: [4] },
+              { french: "Petit", chinese: "小", pinyin: "xiǎo", tones: [3] },
+              { french: "Cher", chinese: "贵", pinyin: "guì", tones: [4] },
+              { french: "Bon marché", chinese: "便宜", pinyin: "pián yi", tones: [2, 0] },
+              { french: "Bon", chinese: "好", pinyin: "hǎo", tones: [3] },
+              { french: "Mauvais", chinese: "坏", pinyin: "huài", tones: [4] },
+              { french: "Beau", chinese: "漂亮", pinyin: "piào liang", tones: [4, 4] },
+              { french: "Fatigué", chinese: "累", pinyin: "lèi", tones: [4] },
+              { french: "Occupé", chinese: "忙", pinyin: "máng", tones: [2] },
+              { french: "Libre", chinese: "空闲", pinyin: "kōng xián", tones: [1, 2] },
+              { french: "Malade", chinese: "生病", pinyin: "shēng bìng", tones: [1, 4] },
+              { french: "En bonne santé", chinese: "健康", pinyin: "jiàn kāng", tones: [4, 1] },
+              { french: "Lundi", chinese: "星期一", pinyin: "xīng qī yī", tones: [1, 1, 1] },
+              { french: "Mardi", chinese: "星期二", pinyin: "xīng qī èr", tones: [1, 1, 4] },
+              { french: "Mercredi", chinese: "星期三", pinyin: "xīng qī sān", tones: [1, 1, 3] },
+              { french: "Jeudi", chinese: "星期四", pinyin: "xīng qī sì", tones: [1, 1, 4] },
+              { french: "Vendredi", chinese: "星期五", pinyin: "xīng qī wǔ", tones: [1, 1, 3] },
+              { french: "Samedi", chinese: "星期六", pinyin: "xīng qī liù", tones: [1, 1, 4] },
+              { french: "Dimanche", chinese: "星期天", pinyin: "xīng qī tiān", tones: [1, 1, 1] },
+              { french: "Aujourd'hui", chinese: "今天", pinyin: "jīn tiān", tones: [1, 1] },
+              { french: "Hier", chinese: "昨天", pinyin: "zuó tiān", tones: [4, 1] },
+              { french: "Demain", chinese: "明天", pinyin: "míng tiān", tones: [2, 1] },
+              { french: "Semaine", chinese: "周", pinyin: "zhōu", tones: [1] },
+              { french: "Mois", chinese: "个月", pinyin: "gè yuè", tones: [0, 1] },
+              { french: "Année", chinese: "年", pinyin: "nián", tones: [1] },
+              { french: "Matin", chinese: "早上", pinyin: "zǎo shàng", tones: [3, 1] },
+              { french: "Après-midi", chinese: "下午", pinyin: "xià wǔ", tones: [4, 1] },
+              { french: "Soir", chinese: "晚上", pinyin: "wǎn shàng", tones: [4, 1] },
+              { french: "Minuit", chinese: "午夜", pinyin: "wǔ yè", tones: [1, 4] },
+              { french: "Heure", chinese: "点", pinyin: "diǎn", tones: [3] },
+              { french: "Minute", chinese: "分", pinyin: "fēn", tones: [1] },
+              { french: "Seconde", chinese: "秒", pinyin: "miǎo", tones: [3] },
+              { french: "Froid", chinese: "冷", pinyin: "lěng", tones: [3] },
+              { french: "Chaud", chinese: "热", pinyin: "rè", tones: [4] },
+              { french: "Sec", chinese: "干", pinyin: "gān", tones: [1] },
+              { french: "Humide", chinese: "湿", pinyin: "shī", tones: [1] },
+              { french: "Nuageux", chinese: "多云", pinyin: "duō yún", tones: [2, 1] },
+              { french: "Ensoleillé", chinese: "晴天", pinyin: "qíng tiān", tones: [2, 1] },
+              { french: "Pluie", chinese: "雨", pinyin: "yǔ", tones: [3] },
+              { french: "Neige", chinese: "雪", pinyin: "xuě", tones: [3] },
+              { french: "Vent", chinese: "风", pinyin: "fēng", tones: [1] },
+              { french: "Orage", chinese: "雷阵雨", pinyin: "léi zhèn yǔ", tones: [1, 4, 3] },
+              { french: "Imprimer", chinese: "打印", pinyin: "dǎ yìn", tones: [4, 4] },
+              { french: "Scanner", chinese: "扫描", pinyin: "sǎo miáo", tones: [3, 2] },
+              { french: "Hôpital", chinese: "医院", pinyin: "yī yuàn", tones: [1, 4] },
+              { french: "Pharmacie", chinese: "药店", pinyin: "yào diàn", tones: [4, 4] },
+              { french: "Banque", chinese: "银行", pinyin: "yín háng", tones: [1, 1] },
+              { french: "Restaurant", chinese: "饭店", pinyin: "fàn diàn", tones: [4, 4] },
+              { french: "Hôtel", chinese: "酒店", pinyin: "jiǔ diàn", tones: [3, 4] },
+              { french: "Gare", chinese: "车站", pinyin: "chē zhàn", tones: [1, 4] },
+              { french: "Aéroport", chinese: "机场", pinyin: "jī chǎng", tones: [1, 3] },
+              { french: "Billet", chinese: "票", pinyin: "piào", tones: [4] },
+              { french: "Passeport", chinese: "护照", pinyin: "hù zhào", tones: [4, 4] },
+              { french: "Argent", chinese: "钱", pinyin: "qián", tones: [2] },
+              { french: "Carte", chinese: "卡", pinyin: "kǎ", tones: [3] },
+              { french: "Clé", chinese: "钥匙", pinyin: "yào shi", tones: [4, 3] },
+              { french: "Porte", chinese: "门", pinyin: "mén", tones: [2] },
+              { french: "Fenêtre", chinese: "窗户", pinyin: "chuāng hu", tones: [1, 3] },
+              { french: "Mur", chinese: "墙", pinyin: "qiáng", tones: [2] },
+              { french: "Toit", chinese: "屋顶", pinyin: "wū dǐng", tones: [1, 3] },
+              { french: "Sol", chinese: "地面", pinyin: "dì miàn", tones: [4, 4] },
+              { french: "Escalier", chinese: "楼梯", pinyin: "lóu tī", tones: [2, 4] },
+              { french: "Ascenseur", chinese: "电梯", pinyin: "diàn tī", tones: [1, 4] },
+              { french: "Réception", chinese: "前台", pinyin: "qián tái", tones: [2, 2] },
+              { french: "Chambre", chinese: "房间", pinyin: "fáng jiān", tones: [2, 1] },
+              { french: "Lit", chinese: "床", pinyin: "chuáng", tones: [2] },
+              { french: "Draps", chinese: "床单", pinyin: "chuáng dān", tones: [2, 1] },
+              { french: "Couvert", chinese: "被子", pinyin: "bèi zi", tones: [4, 0] },
+              { french: "Oreiller", chinese: "枕头", pinyin: "zhěn tou", tones: [3, 0] },
+              { french: "Serviette", chinese: "毛巾", pinyin: "máo jīn", tones: [2, 1] },
+              { french: "Savon", chinese: "香皂", pinyin: "xiāng zào", tones: [1, 4] },
+              { french: "Shampoing", chinese: "洗发水", pinyin: "xǐ fā shuǐ", tones: [3, 1, 3] },
+              { french: "Brosse à dents", chinese: "牙刷", pinyin: "yá shuā", tones: [2, 1] },
+              { french: "Dentifrice", chinese: "牙膏", pinyin: "yá gāo", tones: [2, 1] },
+              { french: "Papier toilette", chinese: "卫生纸", pinyin: "wèi shēng zhǐ", tones: [4, 1, 3] },
+              { french: "Poubelle", chinese: "垃圾桶", pinyin: "lājī tǒng", tones: [1, 3, 3] },
+              { french: "Balai", chinese: "扫把", pinyin: "sào bǎ", tones: [3, 3] },
+              { french: "Serpillière", chinese: "拖把", pinyin: "tuō bǎ", tones: [1, 3] },
+              { french: "Seau", chinese: "桶", pinyin: "tǒng", tones: [3] },
+              { french: "Évier", chinese: "洗手盆", pinyin: "xǐ shǒu pén", tones: [3, 3, 4] },
+              { french: "Douche", chinese: "淋浴", pinyin: "línyù", tones: [2, 4] },
+              { french: "Baignoire", chinese: "浴缸", pinyin: "yù gāng", tones: [4, 1] },
+              { french: "Miroir", chinese: "镜子", pinyin: "jìng zi", tones: [4, 0] },
+              { french: "Cinéma", chinese: "电影", pinyin: "diàn yǐng", tones: [4, 1] },
+              { french: "Théâtre", chinese: "戏剧", pinyin: "xì jù", tones: [4, 4] },
+              { french: "Musée", chinese: "博物馆", pinyin: "bówù guǎn", tones: [2, 4, 3] },
+              { french: "Parc", chinese: "公园", pinyin: "gōng yuán", tones: [1, 1, 2] },
+              { french: "Jardin", chinese: "花园", pinyin: "huā yuán", tones: [1, 1, 2] },
+              { french: "Arbre", chinese: "树", pinyin: "shù", tones: [4] },
+              { french: "Fleur", chinese: "花", pinyin: "huā", tones: [1] },
+              { french: "Herbe", chinese: "草", pinyin: "cǎo", tones: [3] },
+              { french: "Feuille", chinese: "叶子", pinyin: "yè zi", tones: [4, 0] },
+              { french: "Racine", chinese: "根", pinyin: "gēn", tones: [1] },
+              { french: "Tronc", chinese: "干", pinyin: "gàn", tones: [4] },
+              { french: "Branche", chinese: "枝", pinyin: "zhī", tones: [1] },
+              { french: "Roi", chinese: "王", pinyin: "wáng", tones: [2] },
+              { french: "Reine", chinese: "王后", pinyin: "wáng hòu", tones: [2, 4] },
+              { french: "Prince", chinese: "王子", pinyin: "wáng zǐ", tones: [2, 3] },
+              { french: "Princesse", chinese: "公主", pinyin: "gōng zhǔ", tones: [1, 3] },
+              { french: "Famille", chinese: "家庭", pinyin: "jiā tíng", tones: [1, 2] },
+              { french: "Père", chinese: "父亲", pinyin: "fù qīn", tones: [4, 1] },
+              { french: "Mère", chinese: "母亲", pinyin: "mǔ qīn", tones: [3, 1] },
+              { french: "Fils", chinese: "儿子", pinyin: "ér zi", tones: [2, 0] },
+              { french: "Fille", chinese: "女儿", pinyin: "nǚ ér", tones: [3, 0] },
+              { french: "Frère", chinese: "兄弟", pinyin: "xiōng dì", tones: [1, 4] },
+              { french: "Sœur", chinese: "姐妹", pinyin: "jiě mèi", tones: [3, 4] },
+              { french: "Mari", chinese: "丈夫", pinyin: "zhàng fū", tones: [4, 1] },
+              { french: "Femme", chinese: "妻子", pinyin: "qī zi", tones: [1, 3] },
+              { french: "Oncle", chinese: "伯父", pinyin: "bó fù", tones: [2, 4] },
+              { french: "Tante", chinese: "伯母", pinyin: "bó mǔ", tones: [2, 3] },
+              { french: "Cousin", chinese: "表兄弟", pinyin: "biǎo xiōng dì", tones: [3, 1, 4] },
+              { french: "Cousine", chinese: "表姐妹", pinyin: "biǎo jiě mèi", tones: [3, 1, 3] },
+              { french: "Ami", chinese: "朋友", pinyin: "péng yǒu", tones: [2, 3] }, // Déjà défini mais répété pour complétude
+              { french: "Ennemi", chinese: "敌人", pinyin: "dí rén", tones: [2, 2] },
+              { french: "Voitur", chinese: "车", pinyin: "chē", tones: [1] }, // Déjà défini
+              { french: "Bus", chinese: "公共汽车", pinyin: "gōng gòng qì chē", tones: [1, 1, 4, 1] },
+              { french: "Train", chinese: "火车", pinyin: "huǒ chē", tones: [3, 1] },
+              { french: "Avion", chinese: "飞机", pinyin: "fēi jī", tones: [1, 1] },
+              { french: "Bateau", chinese: "船", pinyin: "chuán", tones: [2] },
+              { french: "Vélo", chinese: "自行车", pinyin: "zì xíng chē", tones: [4, 2, 1] },
+              { french: "Moto", chinese: "摩托车", pinyin: "mó tuō chē", tones: [2, 1, 4] },
+              { french: "Rue", chinese: "街", pinyin: "jiē", tones: [1] },
+              { french: "Avenue", chinese: "大街", pinyin: "dà jiē", tones: [4, 1] },
+              { french: "Boulevard", chinese: "林荫大道", pinyin: "lín yīn dà dào", tones: [2, 1, 4, 4] },
+              { french: "Place", chinese: "广场", pinyin: "guǎng chǎng", tones: [3, 4] },
+              { french: "Pont", chinese: "桥", pinyin: "qiáo", tones: [2] },
+              { french: "Tunnel", chinese: "隧道", pinyin: "suì dào", tones: [4, 4] },
+              { french: "Gare", chinese: "站", pinyin: "zhàn", tones: [4] },
+              { french: "Aéroport", chinese: "机场", pinyin: "jī chǎng", tones: [1, 3] }, // Déjà défini
+              { french: "Port", chinese: "港口", pinyin: "gǎng kǒu", tones: [3, 3] },
+              { french: "Plage", chinese: "海滩", pinyin: "hǎi tān", tones: [3, 1] },
+              { french: "Île", chinese: "岛", pinyin: "dǎo", tones: [3] },
+              { french: "Montagne", chinese: "山", pinyin: "shān", tones: [1] },
+              { french: "Colline", chinese: "岗", pinyin: "gǎng", tones: [3] },
+              { french: "Vallée", chinese: "谷", pinyin: "gǔ", tones: [3] },
+              { french: "Rivière", chinese: "江", pinyin: "jiāng", tones: [1] },
+              { french: "Fleuve", chinese: "河", pinyin: "hé", tones: [2] },
+              { french: "Lac", chinese: "湖", pinyin: "hú", tones: [2] },
+              { french: "Chute d'eau", chinese: "瀑布", pinyin: "pù bù", tones: [4, 4] },
+              { french: "Source", chinese: "泉", pinyin: "quán", tones: [2] },
+              { french: "Forêt", chinese: "森林", pinyin: "sēn lín", tones: [1, 2] },
+              { french: "Désert", chinese: "沙漠", pinyin: "shā mò", tones: [1, 4] },
+              { french: "Plaine", chinese: "平原", pinyin: "píng yuán", tones: [1, 2] },
+              { french: "Prairie", chinese: "草原", pinyin: "cǎo yuán", tones: [3, 2] },
+              { french: "Marais", chinese: "沼泽", pinyin: "zhāo zé", tones: [1, 2] },
+              { french: "Océan", chinese: "海洋", pinyin: "hǎi yáng", tones: [3, 2] },
+              { french: "Mer", chinese: "海", pinyin: "hǎi", tones: [3] },
+              { french: "Ciel", chinese: "天", pinyin: "tiān", tones: [1] },
+              { french: "Nuage", chinese: "云", pinyin: "yún", tones: [2] },
+              { french: "Brume", chinese: "雾", pinyin: "wù", tones: [4] },
+              { french: "Pluie", chinese: "雨", pinyin: "yǔ", tones: [3] }, // Déjà défini
+              { french: "Neige", chinese: "雪", pinyin: "xuě", tones: [3] }, // Déjà défini
+              { french: "Grêle", chinese: "冰雹", pinyin: "bīng báo", tones: [1, 2] },
+              { french: "Orage", chinese: "雷", pinyin: "léi", tones: [2] },
+              { french: "Éclair", chinese: "电", pinyin: "diàn", tones: [4] },
+              { french: "Arc-en-ciel", chinese: "彩虹", pinyin: "cǎi hóng", tones: [3, 2] },
+              { french: "Soleil", chinese: "太阳", pinyin: "tài yáng", tones: [4, 2] },
+              { french: "Lune", chinese: "月亮", pinyin: "yuè liàng", tones: [4, 4] },
+              { french: "Étoile", chinese: "星星", pinyin: "xīng xīng", tones: [1, 1] },
+              { french: "Comète", chinese: "彗星", pinyin: "huì xīng", tones: [4, 1] },
+              { french: "Soleil levant", chinese: "旭日", pinyin: "xù rì", tones: [4, 4] },
+              { french: "Soleil couchant", chinese: "夕阳", pinyin: "xī yáng", tones: [4, 2] },
+              { french: "Jour", chinese: "天", pinyin: "tiān", tones: [1] }, // Déjà défini
+              { french: "Nuit", chinese: "夜", pinyin: "yè", tones: [4] },
+              { french: "Aube", chinese: "黎明", pinyin: "líng míng", tones: [2, 2] },
+              { french: "Crépuscule", chinese: "黄昏", pinyin: "huáng hūn", tones: [2, 1] },
+              { french: "Minuit", chinese: "午夜", pinyin: "wǔ yè", tones: [1, 4] }, // Déjà défini
+              { french: "Midi", chinese: "午时", pinyin: "wǔ shí", tones: [3, 2] },
+              { french: "Après-midi", chinese: "下午", pinyin: "xià wǔ", tones: [4, 1] }, // Déjà défini
+              { french: "Matin", chinese: "早上", pinyin: "zǎo shàng", tones: [3, 1] }, // Déjà défini
+              { french: "Soir", chinese: "晚上", pinyin: "wǎn shàng", tones: [4, 1] }, // Déjà défini
+              { french: "Instant", chinese: "瞬间", pinyin: "shùn jiān", tones: [4, 1] },
+              { french: "Moment", chinese: "时候", pinyin: "shí hou", tones: [2, 3] },
+              { french: "Heure", chinese: "点", pinyin: "diǎn", tones: [3] }, // Déjà défini
+              { french: "Minute", chinese: "分", pinyin: "fēn", tones: [1] }, // Déjà défini
+              { french: "Seconde", chinese: "秒", pinyin: "miǎo", tones: [3] }, // Déjà défini
+              { french: "Maintenant", chinese: "现在", pinyin: "xiàn zài", tones: [4, 4] },
+              { french: "Alors", chinese: " тогда", pinyin: "nà shí", tones: [4, 2] },
+              { french: "Avant", chinese: "以前", pinyin: "yǐ qián", tones: [3, 2] },
+              { french: "Après", chinese: "以后", pinyin: "yǐ hòu", tones: [3, 4] },
+              { french: "Déjà", chinese: "已经", pinyin: "yǐ jīng", tones: [3, 1] },
+              { french: "Pas encore", chinese: "还没", pinyin: "hái méi", tones: [2, 4] },
+              { french: "Toujours", chinese: "总是", pinyin: "zǒng shì", tones: [3, 4] },
+              { french: "Jamais", chinese: "从不", pinyin: "cóng bù", tones: [2, 4] },
+              { french: "Parfois", chinese: "有时候", pinyin: "yǒu shí hou", tones: [3, 4, 3] },
+              { french: "Souvent", chinese: "经常", pinyin: "jīng cháng", tones: [1, 2] },
+              { french: "Rarement", chinese: "很少", pinyin: "hěn shǎo", tones: [3, 3] },
+              { french: "Vite", chinese: "快", pinyin: "kuài", tones: [4] },
+              { french: "Lentement", chinese: "慢慢", pinyin: "màn man", tones: [4, 4] },
+              { french: "Tôt", chinese: "早", pinyin: "zǎo", tones: [3] },
+              { french: "Tard", chinese: "晚", pinyin: "wǎn", tones: [3] },
+              { french: "Dans", chinese: "在", pinyin: "zài", tones: [4] },
+              { french: "Sur", chinese: "上面", pinyin: "shàng miàn", tones: [4, 4] },
+              { french: "Sous", chinese: "下面", pinyin: "xià miàn", tones: [4, 4] },
+              { french: "Devant", chinese: "前面", pinyin: "qián miàn", tones: [2, 4] },
+              { french: "Derrière", chinese: "后面", pinyin: "hòu miàn", tones: [4, 4] },
+              { french: "À côté de", chinese: "旁边", pinyin: "páng biān", tones: [2, 1] },
+              { french: "Entre", chinese: "中间", pinyin: "zhōng jiān", tones: [1, 1] },
+              { french: "À l'intérieur", chinese: "里面", pinyin: "lǐ miàn", tones: [3, 4] },
+              { french: "À l'extérieur", chinese: "外面", pinyin: "wài miàn", tones: [4, 4] },
+              { french: "Haut", chinese: "上面", pinyin: "shàng miàn", tones: [4, 4] }, // Déjà défini
+              { french: "Bas", chinese: "下面", pinyin: "xià miàn", tones: [4, 4] }, // Déjà défini
+              { french: "Gauche", chinese: "左边", pinyin: "zuǒ biān", tones: [3, 1] },
+              { french: "Droite", chinese: "右边", pinyin: "yòu biān", tones: [4, 1] },
+              { french: "Nord", chinese: "北", pinyin: "běi", tones: [3] },
+              { french: "Sud", chinese: "南", pinyin: "nán", tones: [2] },
+              { french: "Est", chinese: "东", pinyin: "dōng", tones: [1] },
+              { french: "Ouest", chinese: "西", pinyin: "xī", tones: [1] },
+              { french: "Nord-est", chinese: "东北", pinyin: "dōng běi", tones: [1, 3] },
+              { french: "Nord-ouest", chinese: "西北", pinyin: "xī běi", tones: [1, 3] },
+              { french: "Sud-est", chinese: "东南", pinyin: "dōng nán", tones: [1, 2] },
+              { french: "Sud-ouest", chinese: "西南", pinyin: "xī nán", tones: [1, 2] },
+              { french: "Centre", chinese: "中心", pinyin: "zhōng xīn", tones: [1, 1] },
+              { french: "Coin", chinese: "角落", pinyin: "jiǎo luò", tones: [3, 4] },
+              { french: "Côté", chinese: "侧面", pinyin: "cè miàn", tones: [4, 4] },
+              { french: "Face", chinese: "正面", pinyin: "zhèng miàn", tones: [4, 4] },
+              { french: "Dos", chinese: "背面", pinyin: "bèi miàn", tones: [4, 4] },
+              { french: "Cercle", chinese: "圆", pinyin: "yuán", tones: [2] },
+              { french: "Carré", chinese: "方", pinyin: "fāng", tones: [1] },
+              { french: "Rectangle", chinese: "长方形", pinyin: "cháng fāng xíng", tones: [2, 1, 1] },
+              { french: "Triangle", chinese: "三角形", pinyin: "sān jiǎo xíng", tones: [3, 3, 1] },
+              { french: "Losange", chinese: "菱形", pinyin: "líng xíng", tones: [2, 2] },
+              { french: "Trapezoïde", chinese: "梯形", pinyin: "tī xíng", tones: [3, 1] },
+              { french: "Ligne", chinese: "线", pinyin: "xiàn", tones: [4] },
+              { french: "Point", chinese: "点", pinyin: "diǎn", tones: [3] }, // Déjà défini
+              { french: "Angle", chinese: "角", pinyin: "jiǎo", tones: [3] },
+              { french: "Côté", chinese: "边", pinyin: "biān", tones: [1] },
+              { french: "Sommet", chinese: "顶", pinyin: "dǐng", tones: [3] },
+              { french: "Base", chinese: "底", pinyin: "dǐ", tones: [3] },
+              { french: "Hauteur", chinese: "高度", pinyin: "gāo dù", tones: [1, 4] },
+              { french: "Largeur", chinese: "宽度", pinyin: "kuān dù", tones: [1, 4] },
+              { french: "Longueur", chinese: "长度", pinyin: "cháng dù", tones: [2, 4] },
+              { french: "Périmètre", chinese: "周长", pinyin: "zhōu cháng", tones: [1, 1] },
+              { french: "Aire", chinese: "面积", pinyin: "miàn jī", tones: [4, 1] },
+              { french: "Volume", chinese: "体积", pinyin: "tǐ jī", tones: [3, 1] },
+              { french: "Capacité", chinese: "容量", pinyin: "róng liàng", tones: [2, 4] },
+              { french: "Poids", chinese: "重量", pinyin: "zhòng liàng", tones: [4, 4] },
+              { french: "Masse", chinese: "质量", pinyin: "zhì liàng", tones: [4, 4] },
+              { french: "Densité", chinese: "密度", pinyin: "mì dù", tones: [4, 4] },
+              { french: "Vitesse", chinese: "速度", pinyin: "sù dù", tones: [4, 4] },
+              { french: "Accélération", chinese: "加速度", pinyin: "jiā sù dù", tones: [1, 4, 4] },
+              { french: "Force", chinese: "力", pinyin: "lì", tones: [4] },
+              { french: "Énergie", chinese: "能量", pinyin: "néng liàng", tones: [2, 4] },
+              { french: "Puissance", chinese: "功率", pinyin: "gōng lǜ", tones: [1, 4] },
+              { french: "Pression", chinese: "压力", pinyin: "yā lì", tones: [1, 4] },
+              { french: "Température", chinese: "温度", pinyin: "wēn dù", tones: [1, 4] },
+              { french: "Chaleur", chinese: "热量", pinyin: "rè liàng", tones: [4, 4] },
+              { french: "Froid", chinese: "冷量", pinyin: "lěng liàng", tones: [3, 4] },
+              { french: "Électricité", chinese: "电量", pinyin: "diàn liàng", tones: [4, 4] },
+              { french: "Magnétisme", chinese: "磁性", pinyin: "cí xìng", tones: [2, 4] },
+              { french: "Lumière", chinese: "光", pinyin: "guāng", tones: [1] },
+              { french: "Obscurité", chinese: "暗", pinyin: "àn", tones: [4] },
+              { french: "Couleur", chinese: "颜色", pinyin: "yán sè", tones: [2, 4] },
+              { french: "Rouge", chinese: "红色", pinyin: "hóng sè", tones: [2, 4] },
+              { french: "Bleu", chinese: "蓝色", pinyin: "lán sè", tones: [2, 4] },
+              { french: "Vert", chinese: "绿色", pinyin: "lǜ sè", tones: [4, 4] },
+              { french: "Jaune", chinese: "黄色", pinyin: "huáng sè", tones: [2, 4] },
+              { french: "Orange", chinese: "橙色", pinyin: "chéng sè", tones: [2, 4] },
+              { french: "Violet", chinese: "紫色", pinyin: "zǐ sè", tones: [3, 4] },
+              { french: "Rose", chinese: "粉色", pinyin: "fěn sè", tones: [3, 4] },
+              { french: "Marron", chinese: "棕色", pinyin: "zōng sè", tones: [1, 4] },
+              { french: "Noir", chinese: "黑色", pinyin: "hēi sè", tones: [1, 4] },
+              { french: "Blanc", chinese: "白色", pinyin: "bái sè", tones: [3, 4] },
+              { french: "Gris", chinese: "灰色", pinyin: "huī sè", tones: [1, 4] },
+              { french: "Argenté", chinese: "银色", pinyin: "yín sè", tones: [2, 4] },
+              { french: "Doré", chinese: "金色", pinyin: "jīn sè", tones: [1, 4] },
+              { french: "Forme", chinese: "形状", pinyin: "xíng zhuàng", tones: [2, 4] },
+              { french: "Taille", chinese: "尺寸", pinyin: "chǐ cùn", tones: [3, 3, 4] },
+              { french: "Épaisseur", chinese: "厚度", pinyin: "hòu dù", tones: [4, 4] },
+              { french: "Matière", chinese: "材料", pinyin: "cái liào", tones: [2, 4] },
+              { french: "Bois", chinese: "木材", pinyin: "mù cái", tones: [4, 2] },
+              { french: "Métal", chinese: "金属", pinyin: "jīn shǔ", tones: [1, 2] },
+              { french: "Plastique", chinese: "塑料", pinyin: "sù liào", tones: [3, 4] },
+              { french: "Verre", chinese: "玻璃", pinyin: "bō li", tones: [1] },
+              { french: "Pierre", chinese: "石材", pinyin: "shí cái", tones: [2, 4] },
+              { french: "Béton", chinese: "混凝土", pinyin: "hùn níng tǔ", tones: [2, 2, 3] },
+              { french: "Tissu", chinese: "布料", pinyin: "bù liào", tones: [4, 4] },
+              { french: "Coton", chinese: "棉", pinyin: "mián", tones: [3] },
+              { french: "Laine", chinese: "毛", pinyin: "máo", tones: [2] },
+              { french: "Soie", chinese: "丝", pinyin: "sī", tones: [1] },
+              { french: "Cuir", chinese: "皮革", pinyin: "pí gé", tones: [2, 4] },
+              { french: "Caoutchouc", chinese: "橡胶", pinyin: "xiàng jiāo", tones: [1, 4] },
+              { french: "Silk", chinese: "丝绸", pinyin: "sī chóu", tones: [1, 2] },
+              { french: "Velours", chinese: "天鹅绒", pinyin: "tiān é róng", tones: [1, 2] },
+              { french: "Dentelle", chinese: "蕾丝", pinyin: "lěi sī", tones: [3, 4] },
+              { french: "Broderie", chinese: "绣花", pinyin: "xiù huā", tones: [3, 4] },
+              { french: "Tissage", chinese: "纺织", pinyin: "fǎng zhī", tones: [3, 4] },
+              { french: "Teinture", chinese: "染色", pinyin: "rǎn sè", tones: [2, 4] },
+              { french: "Impression", chinese: "印刷", pinyin: "yìn shuā", tones: [3, 4] },
+              { french: "Couture", chinese: "缝纫", pinyin: "féng rèn", tones: [2, 4] },
+              { french: "Broderie", chinese: "绣花", pinyin: "xiù huā", tones: [3, 4] }, // Déjà défini
+              { french: "Patchwork", chinese: "拼布", pinyin: "pīn bù", tones: [3, 4] },
+              { french: "Quilt", chinese: "被套", pinyin: "bèi tào", tones: [4, 0] },
+              { french: "Rideau", chinese: "窗帘", pinyin: "chuāng lián", tones: [1, 2] },
+              { french: "Store", chinese: "卷帘", pinyin: "juǎn lián", tones: [3, 2] },
+              { french: "Tapis", chinese: "地毯", pinyin: "dì tǎn", tones: [4, 4] },
+              { french: "Moquette", chinese: "地毯", pinyin: "dì tǎn", tones: [4, 4] }, // Déjà défini
+              { french: "Coussins", chinese: "垫子", pinyin: "diàn zi", tones: [4, 0] },
+              { french: "Oreiller", chinese: "枕头", pinyin: "zhěn tou", tones: [3, 0] }, // Déjà défini
+              { french: "Cover", chinese: "被罩", pinyin: "bèi zhào", tones: [4, 4] },
+              { french: "Draps", chinese: "床单", pinyin: "chuáng dān", tones: [2, 1] }, // Déjà défini
+              { french: "Couette", chinese: "被芯", pinyin: "bèi xīn", tones: [4, 1] },
+              { french: "Literie", chinese: "床上用品", pinyin: "chuáng shàng yòng pǐn", tones: [2, 1, 4] },
+              { french: "Serviette de bain", chinese: "浴巾", pinyin: "yù jīn", tones: [4, 1] },
+              { french: "Gant de toilette", chinese: "浴手巾", pinyin: "yù shǒu jīn", tones: [4, 1] },
+              { french: "Peignoir", chinese: "浴衣", pinyin: "yù yī", tones: [4, 1] },
+              { french: "Chaussons", chinese: "拖鞋", pinyin: "tuō xié", tones: [1, 3] },
+              { french: "Pantoufles", chinese: "家居鞋", pinyin: "jiā jū xié", tones: [1, 3] },
+              { french: "Sandales", chinese: "凉鞋", pinyin: "liáng xié", tones: [2, 3] },
+              { french: "Chaussures", chinese: "鞋子", pinyin: "xié zi", tones: [3, 0] },
+              { french: "Baskets", chinese: "运动鞋", pinyin: "yùn dòng xié", tones: [4, 4] },
+              { french: "Talons", chinese: "高跟鞋", pinyin: "gēn gēn xié", tones: [1, 1] },
+              { french: "Escarpins", chinese: "皮鞋", pinyin: "pí xié", tones: [2, 3] },
+              { french: "Bottes", chinese: "靴子", pinyin: "xuē zi", tones: [1, 0] },
+              { french: "Chaussures de sport", chinese: "运动鞋", pinyin: "yùn dòng xié", tones: [4, 4] }, // Déjà défini
+              { french: "Chaussures de ville", chinese: "皮鞋", pinyin: "pí xié", tones: [2, 3] }, // Déjà défini
+              { french: "Chaussures de travail", chinese: "劳保鞋", pinyin: "láo bǎo xié", tones: [2, 3] },
+              { french: "Sabots", chinese: "木鞋", pinyin: "mù xié", tones: [4, 2] },
+              { french: "Chaussons", chinese: "拖鞋", pinyin: "tuō xié", tones: [1, 3] }, // Déjà défini
+              { french: "Chaussettes", chinese: "袜子", pinyin: "wà zi", tones: [3, 0] },
+              { french: "Bas", chinese: "丝袜", pinyin: "sī wà", tones: [1, 3] },
+              { french: "Collants", chinese: "打底裤", pinyin: "dǎ dǐ kù", tones: [3, 3, 4] },
+              { french: "Leggings", chinese: "紧身裤", pinyin: "jǐn shēn kù", tones: [1, 4] },
+              { french: "Jupon", chinese: "半截裙", pinyin: "bàn jié qún", tones: [4, 4] },
+              { french: "Jupe", chinese: "裙子", pinyin: "qún zi", tones: [4, 0] },
+              { french: "Robes", chinese: "连衣裙", pinyin: "lián yī qún", tones: [2, 4] },
+              { french: "Costume", chinese: "西装", pinyin: "xī zhuāng", tones: [1, 4] },
+              { french: "Veste", chinese: "外套", pinyin: "wài tào", tones: [1, 4] },
+              { french: "Blazer", chinese: "西装外套", pinyin: "xī zhuāng wài tào", tones: [1, 4] },
+              { french: "Manteau", chinese: "大衣", pinyin: "dà yī", tones: [4, 1] },
+              { french: "Trench", chinese: "风衣", pinyin: "fēng yī", tones: [1, 4] },
+              { french: "Parkas", chinese: "冲锋衣", pinyin: "chōng fēng yī", tones: [1, 4] },
+              { french: "Doudoune", chinese: "羽绒服", pinyin: "yǔ róng fú", tones: [3, 4] },
+              { french: "Gilet", chinese: "马甲", pinyin: "mǎ jiǎ", tones: [3, 4] },
+              { french: "Pull", chinese: "毛衣", pinyin: "máo yī", tones: [2, 4] },
+              { french: "Cardigan", chinese: "开衫", pinyin: "kāi shān", tones: [1, 4] },
+              { french: "Sous-vêtements", chinese: "内衣", pinyin: "nèi yī", tones: [4, 4] },
+              { french: "Culotte", chinese: "内裤", pinyin: "nèi kù", tones: [4, 4] },
+              { french: "Soutien-gorge", chinese: "胸罩", pinyin: "xiōng zhào", tones: [1, 4] },
+              { french: "Slip", chinese: "三角裤", pinyin: "sān jiǎo kù", tones: [3, 4] },
+              { french: "Boxer", chinese: "平角裤", pinyin: "píng jiǎo kù", tones: [2, 4] },
+              { french: "String", chinese: "丁字裤", pinyin: "dīng zì kù", tones: [1, 4] },
+              { french: "Maillot de bain", chinese: "泳衣", pinyin: "yǒng yī", tones: [3, 4] },
+              { french: "Bikini", chinese: "比基尼", pinyin: "bǐ jī nī", tones: [3, 4] },
+              { french: "Maillot une pièce", chinese: "连体泳衣", pinyin: "lián tǐ yǒng yī", tones: [2, 4] },
+              { french: "Boxer de bain", chinese: "泳裤", pinyin: "yǒng kù", tones: [3, 4] },
+              { french: "Short de bain", chinese: "泳装", pinyin: "yǒng zhuāng", tones: [3, 4] },
+              { french: "Serviette de plage", chinese: "沙滩巾", pinyin: "shā tān jīn", tones: [3, 1] },
+              { french: "Paréo", chinese: "围裙", pinyin: "wéi qún", tones: [2, 4] },
+              { french: "Pareo", chinese: "沙垫", pinyin: "shā diàn", tones: [3, 1] },
+              { french: "Chapéu", chinese: "帽子", pinyin: "mào zi", tones: [4, 0] },
+              { french: "Bonnet", chinese: "毛帽", pinyin: "máo mào", tones: [2, 4] },
+              { french: "Casquette", chinese: "鸭舌帽", pinyin: "yā shé mào", tones: [2, 4] },
+              { french: "Chapeau", chinese: "礼帽", pinyin: "lǐ mào", tones: [4, 0] },
+              { french: "Béret", chinese: "贝雷帽", pinyin: "bèi léi mào", tones: [3, 4] },
+              { french: "Casque", chinese: "安全帽", pinyin: "ān quán mào", tones: [1, 4] },
+              { french: "Casque de vélo", chinese: "自行车头盔", pinyin: "zì xíng chē tóu kuī", tones: [4, 2, 1] },
+              { french: "Casque de moto", chinese: "摩托车头盔", pinyin: "mó tuō chē tóu kuī", tones: [2, 1, 4] },
+              { french: "Casque de chantier", chinese: "安全头盔", pinyin: "ān quán tóu kuī", tones: [1, 4] },
+              { french: "Casque de sport", chinese: "运动头盔", pinyin: "yùn dòng tóu kuī", tones: [4, 4] },
+              { french: "Lunettes", chinese: "眼镜", pinyin: "yǎn jìng", tones: [3, 4] },
+              { french: "Lunettes de soleil", chinese: "太阳镜", pinyin: "tàiyáng jìng", tones: [4, 4] },
+              { french: "Lunettes de lecture", chinese: "老花镜", pinyin: "lǎo huā jìng", tones: [3, 4] },
+              { french: "Lunettes de protection", chinese: "防护眼镜", pinyin: "fáng hù yǎn jìng", tones: [1, 4] },
+              { french: "Lunettes de natation", chinese: "泳镜", pinyin: "yǒng jìng", tones: [3, 4] },
+              { french: "Lunettes de réalité virtuelle", chinese: "虚拟现实眼镜", pinyin: "xūnǐ xiànshí yǎn jìng", tones: [1, 4] },
+              { french: "Lunettes de réalité augmentée", chinese: "增强现实眼镜", pinyin: "zēngqiāng xiànshí yǎn jìng", tones: [1, 4] },
+              { french: "Loupe", chinese: "放大镜", pinyin: "fàng dà jìng", tones: [2, 4] },
+              { french: "Microscope", chinese: "显微镜", pinyin: "xiǎn wēi jìng", tones: [1, 4] },
+              { french: "Télescope", chinese: "望远镜", pinyin: "wàng yuǎn jìng", tones: [1, 4] },
+              { french: "Jumelles", chinese: "双筒望远镜", pinyin: "shuāng tǒng wàng yuǎn jìng", tones: [1, 4] },
+              { french: "Boussole", chinese: "指南针", pinyin: "zhǐ nán zhēn", tones: [3, 4] },
+              { french: "Compas", chinese: "圆规", pinyin: "yuán guī", tones: [2, 4] },
+              { french: "Équerre", chinese: "直角尺", pinyin: "zhí jiǎo chǐ", tones: [4, 4] },
+              { french: "Règle", chinese: "尺子", pinyin: "chǐ zi", tones: [3, 4] },
+              { french: "Mètre", chinese: "米尺", pinyin: "mǐ chǐ", tones: [3, 4] },
+              { french: "Jauge", chinese: "量规", pinyin: "liàng guī", tones: [2, 4] },
+              { french: "Niveau à bulle", chinese: "水平尺", pinyin: "shuǐ píng chǐ", tones: [1, 4] },
+              { french: "Fil à plomb", chinese: "垂直尺", pinyin: "chuí zhí chǐ", tones: [4, 4] },
+              { french: "Équerre de menuisier", chinese: "木工直角尺", pinyin: "mù gōng zhí jiǎo chǐ", tones: [4, 4] },
+              { french: "Compas à réglable", chinese: "可调圆规", pinyin: "kě tiáo yuán guī", tones: [2, 4] },
+              { french: "Échelle", chinese: "梯子", pinyin: "tī zi", tones: [3, 4] },
+              { french: "Échelle de secours", chinese: "消防梯", pinyin: "xiāo fáng tī", tones: [1, 4] },
+              { french: "Échelle télescopique", chinese: "伸缩梯", pinyin: "shēn suō tī", tones: [1, 4] },
+              { french: "Échelle de meunier", chinese: "磨坊梯", pinyin: "mó fāng tī", tones: [2, 4] },
+              { french: "Échelle de bibliothèque", chinese: "图书梯", pinyin: "tú shū tī", tones: [2, 4] },
+              { french: "Échelle de pompier", chinese: "消防梯", pinyin: "xiāo fáng tī", tones: [1, 4] }, // Déjà défini
+              { french: "Échelle de jardin", chinese: "花园梯", pinyin: "huā yuán tī", tones: [3, 4] },
+              { french: "Échelle de peinture", chinese: "油漆梯", pinyin: "yóu qī tī", tones: [2, 4] },
+              { french: "Échelle de chantier", chinese: "施工梯", pinyin: "shī gōng tī", tones: [1, 4] },
+              { french: "Échelle de bibliothèque", chinese: "图书梯", pinyin: "tú shū tī", tones: [2, 4] }, // Déjà défini
+              { french: "Échelle de pompier", chinese: "消防梯", pinyin: "xiāo fáng tī", tones: [1, 4] }, // Déjà défini
+              { french: "Échelle de jardin", chinese: "花园梯", pinyin: "huā yuán tī", tones: [3, 4] }, // Déjà défini
+              { french: "Échelle de peinture", chinese: "油漆梯", pinyin: "yóu qī tī", tones: [2, 4] }, // Déjà défini
+              { french: "Échelle de chantier", chinese: "施工梯", pinyin: "shī gōng tī", tones: [1, 4] }, // Déjà défini
+              { french: "Échelle de bibliothèque", chinese: "图书梯", pinyin: "tú shū tī", tones: [2, 4] }, // Déjà défini
+              { french: "Échelle de pompier", chinese: "消防梯", pinyin: "xiāo fáng tī", tones: [1, 4] }, // Déjà défini
+              { french: "Échelle de jardin", chinese: "花园梯", pinyin: "huā yuán tī", tones: [3, 4] }, // Déjà défini
+              { french: "Échelle de peinture", chinese: "油漆梯", pinyin: "yóu qī tī", tones: [2, 4] }, // Déjà défini
+              { french: "Échelle de chantier", chinese: "施工梯", pinyin: "shī gōng tī", tones: [1, 4] } // Déjà défini
+          ].slice(0, 150); // Garder exactement 150 mots pour HSK 1
+
+          // ======================
+          // LOGIQUE DE L'APPLICATION
+          // ======================
+          let currentIndex = 0;
+          let correctAnswers = 0;
+          let wrongAnswers = 0;
+          let currentStreak = 0;
+          let isShowingAnswer = false;
+
+          // Éléments DOM
+          const frenchWordEl = document.getElementById('frenchWord');
+          const chineseWordEl = document.getElementById('chineseWord');
+          const pinyinEl = document.getElementById('pinyin');
+          const tonesEl = document.getElementById('tones');
+          const tonesLegendEl = document.getElementById('tonesLegend');
+          const showAnswerBtn = document.getElementById('showAnswer');
+          const nextWordBtn = document.getElementById('nextWord');
+          const pronounceBtn = document.getElementById('pronounce');
+          const counterEl = document.getElementById('counter');
+          const progressFillEl = document.getElementById('progressFill');
+          const correctCountEl = document.getElementById('correctCount');
+          const wrongCountEl = document.getElementById('wrongCount');
+          const streakEl = document.getElementById('streak');
+
+          // Initialiser l'application
+          function initApp() {
+              loadStats();
+              updateDisplay();
+              updateTonesIndicators();
+              updateProgress();
+              announceToScreenReader(`Application prête. Mot actuel: ${vocabulary[currentIndex].french}`);
+          }
+
+          // Mettre à jour l'affichage du mot actuel
+          function updateDisplay() {
+              const word = vocabulary[currentIndex];
+
+              frenchWordEl.textContent = word.french;
+              chineseWordEl.textContent = word.chinese;
+              pinyinEl.textContent = word.pinyin;
+
+              // Réinitialiser l'état
+              chineseWordEl.classList.remove('visible');
+              pinyinEl.classList.remove('visible');
+              isShowingAnswer = false;
+              showAnswerBtn.textContent = 'Voir la réponse';
+              showAnswerBtn.disabled = false;
+
+              // Mettre à jour les indicateurs de tons
+              updateTonesIndicators();
+
+              // Mettre à jour le compteur et la barre de progrès
+              counterEl.textContent = `Mot ${currentIndex + 1}/${vocabulary.length}`;
+              const progressPercent = ((currentIndex + 1) / vocabulary.length) * 100;
+              progressFillEl.style.width = progressPercent + '%';
+          }
+
+          // Mettre à jour les indicateurs visuels des tons
+          function updateTonesIndicators() {
+              const word = vocabulary[currentIndex];
+              tonesEl.innerHTML = '';
+              tonesLegendEl.innerHTML = '';
+
+              if (!word || !word.tones) return;
+
+              // Créer les marqueurs de ton visuels
+              word.tones.forEach((tone, index) => {
+                  const toneDiv = document.createElement('div');
+                  toneDiv.className = `tone-mark tone-${tone}`;
+
+                  // Ajouter une description pour l'accessibilité
+                  const toneDescriptions = {
+                      0: 'ton neutre',
+                      1: 'première tone (haute et plate)',
+                      2: 'deuxième tone (montante)',
+                      3: 'troisième tone (descendante puis montante)',
+                      4: 'quatrième tone (descendante)'
+                  };
+                  toneDiv.setAttribute('aria-label', toneDescriptions[tone] || `tone ${tone}`);
+
+                  tonesEl.appendChild(toneDiv);
+              });
+
+              // Créer la légende des tons
+              const toneLabels = [
+                  { label: '1ʳᵉ tone', desc: 'haute et plate', className: 'tone-1' },
+                  { label: '2ᵉ tone', desc: 'montante', className: 'tone-2' },
+                  { label: '3ᵉ tone', desc: 'basse puis montante', className: 'tone-3' },
+                  { label: '4ᵉ tone', desc: 'descendante', className: 'tone-4' },
+                  { label: 'ton neutre', desc: 'léger et bref', className: 'tone-0' }
+              ];
+
+              toneLabels.forEach(tone => {
+                  const span = document.createElement('span');
+                  span.innerHTML = `
+                      <div class="tone-mark ${tone.className}" aria-hidden="true"></div>
+                      <span>${tone.label}: ${tone.desc}</span>
+                  `;
+                  tonesLegendEl.appendChild(span);
+              });
+          }
+
+          // Montrer ou cacher la réponse
+          function toggleAnswer() {
+              if (!isShowingAnswer) {
+                  chineseWordEl.classList.add('visible');
+                  pinyinEl.classList.add('visible');
+                  isShowingAnswer = true;
+                  showAnswerBtn.textContent = 'Cacher la réponse';
+                  announceToScreenReader(`Réponse: ${vocabulary[currentIndex].chinese}, pinyin: ${vocabulary[currentIndex].pinyin}`);
+              } else {
+                  chineseWordEl.classList.remove('visible');
+                  pinyinEl.classList.remove('visible');
+                  isShowingAnswer = false;
+                  showAnswerBtn.textContent = 'Voir la réponse';
+                  announceToScreenReader(`Mot français: ${vocabulary[currentIndex].french}. Appuyez sur Entrée pour voir la réponse.`);
+              }
+          }
+
+          // Passer au mot suivant et mettre à jour les statistiques
+          function nextWord() {
+              const word = vocabulary[currentIndex];
+
+              // Mettre à jour les statistiques selon l'état actuel
+              if (isShowingAnswer) {
+                  // L'utilisateur a vu la réponse avant de passer = considéré comme correct
+                  correctAnswers++;
+                  currentStreak++;
+              } else {
+                  // L'utilisateur est passé sans voir la réponse = considéré comme erreur
+                  wrongAnswers++;
+                  currentStreak = 0; // Réinitialiser la série en cas d'erreur
+              }
+
+              // Sauvegarder les statistiques
+              saveStats();
+
+              // Passer au mot suivant (boucle circulaire)
+              currentIndex = (currentIndex + 1) % vocabulary.length;
+
+              // Mettre à jour l'affichage
+              updateDisplay();
+              updateStatsDisplay();
+
+              // Annoncer pour l'accessibilité
+              announceToScreenReader(`Nouveau mot: ${vocabulary[currentIndex].french}. Appuyez sur Entrée pour voir la réponse.`);
+          }
+
+          // Prononcer le mot actuel (avec fallback)
+          function pronounceWord() {
+              const word = vocabulary[currentIndex];
+
+              // Vérifier si la synthèse vocale est disponible
+              if ('speechSynthesis' in window) {
+                  // Annuler toute prononciation en cours
+                  window.speechSynthesis.cancel();
+
+                  const utterance = new SpeechSynthesisUtterance(word.pinyin);
+                  utterance.lang = 'zh-CN';
+                  utterance.rate = 0.8; // Légèrement plus lent pour une meilleure compréhension
+                  utterance.pitch = 1.2;
+
+                  window.speechSynthesis.speak(utterance);
+                  announceToScreenReader(`Prononciation: ${word.pinyin}`);
+              } else {
+                  // Fallback : afficher l'alerte avec le pinyin
+                  alert(`Prononciation du mot "${word.french}" :\n${word.pinyin}\n\n(NOTE: La synthèse vocale n'est pas disponible dans ce navigateur. Pour
+  une meilleure expérience, utilisez Chrome, Edge ou Safari.)`);
+              }
+          }
+
+          // Mettre à jour l'affichage des statistiques
+          function updateStatsDisplay() {
+              correctCountEl.textContent = correctAnswers;
+              wrongCountEl.textContent = wrongAnswers;
+              streakEl.textContent = currentStreak;
+          }
+
+          // Sauvegarder les statistiques dans localStorage
+          function saveStats() {
+              const stats = {
+                  correctAnswers: correctAnswers,
+                  wrongAnswers: wrongAnswers,
+                  currentStreak: currentStreak,
+                  lastStudyDate: new Date().toISOString().split('T')[0]
+              };
+              localStorage.setItem('chineseLearningStats', JSON.stringify(stats));
+          }
+
+          // Charger les statistiques depuis localStorage
+          function loadStats() {
+              const stats = localStorage.getItem('chineseLearningStats');
+              if (stats) {
+                  try {
+                      const parsed = JSON.parse(stats);
+                      correctAnswers = parsed.correctAnswers || 0;
+                      wrongAnswers = parsed.wrongAnswers || 0;
+                      currentStreak = parsed.currentStreak || 0;
+                  } catch (e) {
+                      console.warn('Impossible de charger les statistiques:', e);
+                      // Réinitialiser en cas de corruption
+                      correctAnswers = 0;
+                      wrongAnswers = 0;
+                      currentStreak = 0;
+                  }
+              }
+          }
+
+          // Réinitialiser les statistiques
+          function resetStats() {
+              if (window.confirm('Êtes-vous sûr de vouloir réinitialiser toutes vos statistiques? Cette action est irréversible.')) {
+                  correctAnswers = 0;
+                  wrongAnswers = 0;
+                  currentStreak = 0;
+                  saveStats();
+                  updateStatsDisplay();
+                  announceToScreenReader('Statistiques réinitialisées');
+              }
+          }
+
+          // Annoncer aux lecteurs d'écran
+          function announceToScreenReader(message) {
+              // Créer un élément temporaire pour l'annonce
+              const announcement = document.createElement('div');
+              announcement.setAttribute('aria-live', 'polite');
+              announcement.setAttribute('class', 'visually-hidden');
+              announcement.textContent = message;
+              document.body.appendChild(announcement);
+
+              // Nettoyer après annonce
+              setTimeout(() => {
+                  announcement.remove();
+              }, 3000);
+          }
+
+          // Gestion des événements
+          showAnswerBtn.addEventListener('click', toggleAnswer);
+          nextWordBtn.addEventListener('click', nextWord);
+          pronounceBtn.addEventListener('click', pronounceWord);
+
+          // Gestion du clavier
+          document.addEventListener('keydown', (e) => {
+              // Ignorer si l'utilisateur est en train de taper dans un champ de saisie
+              if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+              switch(e.key) {
+                  case 'Enter':
+                      if (isShowingAnswer) {
+                          nextWord();
+                      } else {
+                          toggleAnswer();
+                      }
+                      break;
+                  case 'ArrowRight':
+                      nextWord();
+                      break;
+                  case 'ArrowLeft':
+                      // Aller en arrière seulement si on voit la réponse (pour éviter de perdre sa place)
+                      if (isShowingAnswer) {
+                          currentIndex = (currentIndex - 1 + vocabulary.length) % vocabulary.length;
+                          updateDisplay();
+                          updateStatsDisplay();
+                          announceToScreenReader(`Mot précédent: ${vocabulary[currentIndex].french}. Appuyez sur Entrée pour voir la réponse.`);
+                      }
+                      break;
+                  case ' ':
+                      // Espace pour jouer/arrêter l'audio
+                      pronounceWord();
+                      break;
+              }
+          });
+
+          // Gestion du bouton de réinitialisation des stats
+          document.getElementById('resetStats').addEventListener('click', function(e) {
+              e.preventDefault();
+              resetStats();
+          });
+
+          // Initialiser l'application quand le DOM est prêt
+          if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', initApp);
+          } else {
+              initApp();
+          }
+      </script>
+  </body>
+  </html>
